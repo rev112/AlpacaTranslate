@@ -1,0 +1,18 @@
+{
+  "manifest_version": 2,
+  "name": "SelectWord",
+  "version": "1.0",
+
+  "description": "Select a word and show a pop up with it",
+
+  "icons": {
+    "48": "icons/beasts-48.png"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["*://*/*"],
+      "js": ["select.js"]
+    }
+  ]
+}
