@@ -9,7 +9,17 @@ function showTooltip(text) {
   elem.innerHTML = text;
   document.body.appendChild(elem);
   isShown = true; 
+
+  const url = "https://www.linguee.com/english-russian/search?source=auto&query=" + text;
+  fetch(url).then((response) => {
+    response.text().then((body) => {
+      var el = document.createElement('html');
+      el.innerHTML = body;
+      console.log(el);
+    });
+  });
 }
+
 
 function hideTooltip() {
   const elems = document.querySelectorAll("#" + dialogId);
@@ -19,6 +29,7 @@ function hideTooltip() {
 
   isShown = false;
 }
+
 
 document.addEventListener("dblclick", (e) => {
   const selObj = window.getSelection().toString();

@@ -8,6 +8,10 @@
   "icons": {
     "48": "icons/beasts-48.png"
   },
+  "permissions": [
+    "*://linguee.com/*",
+    "*://www.linguee.com/*"
+  ],
 
   "content_scripts": [
     {
