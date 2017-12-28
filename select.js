@@ -1,6 +1,9 @@
-console.info("Extension is loaded");
+/* globals fetch */
+'use strict';
 
-var isShown = false;
+console.info('Extension is loaded');
+
+let isShown = false;
 const dialogId = 'select_tooltip_dialog';
 
 function showTooltip(text) {
@@ -8,12 +11,12 @@ function showTooltip(text) {
   elem.id = dialogId;
   elem.innerHTML = text;
   document.body.appendChild(elem);
-  isShown = true; 
+  isShown = true;
 
-  const url = "https://www.linguee.com/english-russian/search?source=auto&query=" + text;
+  const url = 'https://www.linguee.com/english-russian/search?source=auto&query=' + text;
   fetch(url).then((response) => {
     response.text().then((body) => {
-      var el = document.createElement('html');
+      let el = document.createElement('html');
       el.innerHTML = body;
       console.log(el);
     });
@@ -22,25 +25,25 @@ function showTooltip(text) {
 
 
 function hideTooltip() {
-  const elems = document.querySelectorAll("#" + dialogId);
-  for (var i = 0; i < elems.length; i++) {
-    elems[i].remove(); 
+  const elems = document.querySelectorAll('#' + dialogId);
+  for (let i = 0; i < elems.length; i++) {
+    elems[i].remove();
   }
 
   isShown = false;
 }
 
 
-document.addEventListener("dblclick", (e) => {
+document.addEventListener('dblclick', (e) => {
   const selObj = window.getSelection().toString();
   const withShift = e.shiftKey;
-  console.info("Double click, with SHIFT: ", withShift); 
+  console.info('Double click, with SHIFT: ', withShift);
 
   if (!withShift || selObj.length > 100) {
     return;
   }
 
-  console.info("Selected: ", selObj);
+  console.info('Selected: ', selObj);
 
   if (isShown) {
     hideTooltip();

@@ -1,0 +1,9 @@
+{
+  "name": "AlpacaTranslate",
+  "private": true,
+  "contributors": [],
+  "devDependencies": {
+    "eslint": "*"
+  },
+  "dependencies": {}
+}
