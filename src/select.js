@@ -18,7 +18,18 @@ function showTooltip(text) {
     response.text().then((body) => {
       let el = document.createElement('html');
       el.innerHTML = body;
-      console.log(el);
+      let exact_match_block = el.getElementsByClassName('exact')[0];
+      if (!exact_match_block) {
+        console.log("No 'exact' block found");
+        return;
+      }
+      let translations = Array.from(exact_match_block.getElementsByClassName('tag_trans'));
+      let results = translations.map((tr) => {
+        let text = tr.getElementsByClassName('dictLink')[0].text;
+        let type = tr.getElementsByClassName('tag_type')[0].textContent;
+        return [text, type];
+      });
+      console.log(results);
     });
   });
 }
