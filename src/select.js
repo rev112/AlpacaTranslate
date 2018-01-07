@@ -6,6 +6,11 @@ console.info('Extension is loaded');
 let isShown = false;
 const dialogId = 'select_tooltip_dialog';
 
+function renderTooltipMarkup(transDict) {
+  return document.createElement('div');
+}
+
+
 function showTooltip(text) {
   const elem = document.createElement('div');
   elem.id = dialogId;
@@ -18,16 +23,17 @@ function showTooltip(text) {
     response.text().then((body) => {
       let el = document.createElement('html');
       el.innerHTML = body;
-      let exact_match_block = el.getElementsByClassName('exact')[0];
+      let exact_match_block = el.getElementsByClassName('lemma featured')[0];
       if (!exact_match_block) {
-        console.log("No 'exact' block found");
+        console.log('No translation block found');
         return;
       }
       let translations = Array.from(exact_match_block.getElementsByClassName('tag_trans'));
       let results = translations.map((tr) => {
         let text = tr.getElementsByClassName('dictLink')[0].text;
         let type = tr.getElementsByClassName('tag_type')[0].textContent;
-        return [text, type];
+        let type_desc = tr.getElementsByClassName('tag_type')[0].title;
+        return [text, [type, type_desc]];
       });
       console.log(results);
     });
@@ -60,4 +66,15 @@ document.addEventListener('dblclick', (e) => {
     hideTooltip();
   }
   showTooltip(selObj);
+});
+
+
+document.addEventListener('dblclick', (e) => {
+  const x = e.offsetX;
+  const y = e.offsetY;
+  let el = document.getElementsByClassName('transbox')[0];
+  el.style.display = 'block';
+  el.style.left = x + 10 + 'px';
+  el.style.top = y + 10 + 'px';
+  console.log({ x: x, y: y});
 });
