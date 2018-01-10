@@ -3,21 +3,51 @@
 
 console.info('Extension is loaded');
 
+const isDebug = true;
 let isShown = false;
-const dialogId = 'select_tooltip_dialog';
+const dialogClass = 'transbox';
 
-function renderTooltipMarkup(transDict) {
-  return document.createElement('div');
+
+function log_debug(msg) {
+  if (isDebug) {
+    console.log(msg);
+  }
 }
 
 
-function showTooltip(text) {
+function renderTooltipMarkup(transDict) {
+  let tooltip = document.createElement('div');
+  tooltip.classList;
+}
+
+
+function hideTooltip() {
+  const elems = document.getElementsByClassName(dialogClass);
+  for (let i = 0; i < elems.length; i++) {
+    elems[i].remove();
+  }
+  isShown = false;
+}
+
+
+function showResults(results, e) {
+  log_debug('Showing result tooltip...');
+  const x = e.clientX;
+  const y = e.clientY;
+  log_debug({x: x, y: y});
+
   const elem = document.createElement('div');
-  elem.id = dialogId;
-  elem.innerHTML = text;
+  elem.innerHTML = results.toString();
+  elem.classList.add(dialogClass);
+  elem.style.left = x + 10 + 'px';
+  elem.style.top = y + 10 + 'px';
+
   document.body.appendChild(elem);
   isShown = true;
+}
 
+
+function showTooltip(text, e) {
   const url = 'https://www.linguee.com/english-russian/search?source=auto&query=' + text;
   fetch(url).then((response) => {
     response.text().then((body) => {
@@ -25,7 +55,7 @@ function showTooltip(text) {
       el.innerHTML = body;
       let exact_match_block = el.getElementsByClassName('lemma featured')[0];
       if (!exact_match_block) {
-        console.log('No translation block found');
+        log_debug('No translation block found');
         return;
       }
       let translations = Array.from(exact_match_block.getElementsByClassName('tag_trans'));
@@ -35,20 +65,19 @@ function showTooltip(text) {
         let type_desc = tr.getElementsByClassName('tag_type')[0].title;
         return [text, [type, type_desc]];
       });
-      console.log(results);
+      log_debug(results);
+      showResults(results, e);
     });
   });
 }
 
 
-function hideTooltip() {
-  const elems = document.querySelectorAll('#' + dialogId);
-  for (let i = 0; i < elems.length; i++) {
-    elems[i].remove();
+document.addEventListener('click', (e) => {
+  if (isShown) {
+    hideTooltip();
   }
-
-  isShown = false;
-}
+  console.log(e);
+});
 
 
 document.addEventListener('dblclick', (e) => {
@@ -65,16 +94,7 @@ document.addEventListener('dblclick', (e) => {
   if (isShown) {
     hideTooltip();
   }
-  showTooltip(selObj);
+  // showTooltip(selObj, e);
+  showResults([1,2,3], e);
 });
 
-
-document.addEventListener('dblclick', (e) => {
-  const x = e.offsetX;
-  const y = e.offsetY;
-  let el = document.getElementsByClassName('transbox')[0];
-  el.style.display = 'block';
-  el.style.left = x + 10 + 'px';
-  el.style.top = y + 10 + 'px';
-  console.log({ x: x, y: y});
-});
