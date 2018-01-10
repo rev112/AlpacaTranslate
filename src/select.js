@@ -1,11 +1,9 @@
 /* globals fetch */
 'use strict';
 
-console.info('Extension is loaded');
-
 const isDebug = true;
-let isShown = false;
 const dialogClass = 'transbox';
+let isShown = false;
 
 
 function log_debug(msg) {
@@ -37,7 +35,7 @@ function showResults(results, e) {
   log_debug({x: x, y: y});
 
   const elem = document.createElement('div');
-  elem.innerHTML = results.toString();
+  elem.innerHTML = JSON.stringify(results);
   elem.classList.add(dialogClass);
   elem.style.left = x + 10 + 'px';
   elem.style.top = y + 10 + 'px';
@@ -58,13 +56,21 @@ function showTooltip(text, e) {
         log_debug('No translation block found');
         return;
       }
-      let translations = Array.from(exact_match_block.getElementsByClassName('tag_trans'));
-      let results = translations.map((tr) => {
+      let translation_blocks = Array.from(exact_match_block.getElementsByClassName('tag_trans'));
+      let translations = translation_blocks.map((tr) => {
         let text = tr.getElementsByClassName('dictLink')[0].text;
         let type = tr.getElementsByClassName('tag_type')[0].textContent;
         let type_desc = tr.getElementsByClassName('tag_type')[0].title;
         return [text, [type, type_desc]];
       });
+
+      let normalized_block = exact_match_block.getElementsByClassName('line lemma_desc')[0];
+      let normalized = normalized_block.getElementsByClassName('dictLink')[0].text;
+      let results = {
+        'original': text,
+        'normalized': normalized,
+        'translations': translations
+      }
       log_debug(results);
       showResults(results, e);
     });
@@ -76,9 +82,7 @@ document.addEventListener('click', (e) => {
   if (isShown) {
     hideTooltip();
   }
-  console.log(e);
 });
-
 
 document.addEventListener('dblclick', (e) => {
   const selObj = window.getSelection().toString();
@@ -89,12 +93,12 @@ document.addEventListener('dblclick', (e) => {
     return;
   }
 
-  console.info('Selected: ', selObj);
+  log_debug('Selected: ', selObj);
 
   if (isShown) {
     hideTooltip();
   }
-  // showTooltip(selObj, e);
-  showResults([1,2,3], e);
+  showTooltip(selObj, e);
 });
 
+log_debug('Extension is loaded');
