@@ -13,12 +13,6 @@ function log_debug(msg) {
 }
 
 
-function renderTooltipMarkup(transDict) {
-  let tooltip = document.createElement('div');
-  tooltip.classList;
-}
-
-
 function hideTooltip() {
   const elems = document.getElementsByClassName(dialogClass);
   for (let i = 0; i < elems.length; i++) {
@@ -70,7 +64,7 @@ function showTooltip(text, e) {
         'original': text,
         'normalized': normalized,
         'translations': translations
-      }
+      };
       log_debug(results);
       showResults(results, e);
     });
@@ -78,7 +72,7 @@ function showTooltip(text, e) {
 }
 
 
-document.addEventListener('click', (e) => {
+document.addEventListener('click', () => {
   if (isShown) {
     hideTooltip();
   }
