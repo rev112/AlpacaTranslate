@@ -19,3 +19,6 @@ In short:
 
 "Open about:debugging in Firefox, click "Load Temporary Add-on" and select any file in your extension's directory:"
 
+## How to use
+
+Hold "Shift" and double click on a word you want to translate. A popup with translations will appear in a second or two.
