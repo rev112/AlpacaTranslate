@@ -14,6 +14,7 @@ function log_debug(...args) {
 
 
 function hideTooltip() {
+  log_debug('Showing result tooltip...');
   const elems = document.getElementsByClassName(dialogClass);
   for (let i = 0; i < elems.length; i++) {
     elems[i].remove();
@@ -26,8 +27,6 @@ function showResults(results, e) {
   log_debug('Showing result tooltip...');
   const x = e.clientX;
   const y = e.clientY;
-  log_debug({x: x, y: y});
-
   const elem = document.createElement('div');
   elem.innerHTML = JSON.stringify(results);
   elem.classList.add(dialogClass);
@@ -40,9 +39,10 @@ function showResults(results, e) {
 
 
 function showTooltip(text, e) {
-  const url = 'https://www.linguee.com/english-russian/search?source=auto&query=' + text;
-  fetch(url).then((response) => {
-    response.text().then((body) => {
+  const url = 'https://www.linguee.com/english-russian/search?query=' + text;
+  fetch(url)
+    .then((response) => response.text())
+    .then((body) => {
       let el = document.createElement('html');
       el.innerHTML = body;
       let exact_match_block = el.getElementsByClassName('lemma featured')[0];
@@ -63,12 +63,12 @@ function showTooltip(text, e) {
       let results = {
         'original': text,
         'normalized': normalized,
-        'translations': translations
+        'translations': translations,
+        'url': url
       };
-      log_debug(results);
+      log_debug('Results:', results);
       showResults(results, e);
     });
-  });
 }
 
 
@@ -81,13 +81,13 @@ document.addEventListener('click', () => {
 document.addEventListener('dblclick', (e) => {
   const selObj = window.getSelection().toString();
   const withShift = e.shiftKey;
-  console.info('Double click, with SHIFT: ', withShift);
+  log_debug('Double click, with SHIFT: ', withShift);
 
   if (!withShift || selObj.length > 100) {
     return;
   }
 
-  log_debug('Selected: ', selObj);
+  log_debug('Selected text: ' + selObj);
 
   if (isShown) {
     hideTooltip();
