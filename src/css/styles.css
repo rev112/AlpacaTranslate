@@ -8,4 +8,6 @@
   background-color: white !important;
   opacity: 1 !important;
   z-index: 2147483647 !important;
+  color: black !important;
+  font-family: "Times New Roman", Times, serif !important;
 }

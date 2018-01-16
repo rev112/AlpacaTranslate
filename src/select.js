@@ -6,9 +6,9 @@ const dialogClass = 'transbox';
 let isShown = false;
 
 
-function log_debug(msg) {
+function log_debug(...args) {
   if (isDebug) {
-    console.log(msg);
+    console.log(...args);
   }
 }
 
