@@ -40,6 +40,21 @@ function showResults(results, e) {
 
 function showTooltip(text, e) {
   const url = 'https://www.linguee.com/english-russian/search?query=' + text;
+
+  const results = {
+    'original':'capability',
+    'normalized':'capability',
+    'translations':[
+      ['возможность',['f','noun, feminine']],
+      ['потенциал',['m','noun, masculine']],
+      ['способность',['f','noun, feminine']],
+      ['умение',['nt','noun, neuter']]
+    ],
+    'url':'https://www.linguee.com/english-russian/search?query=capability'
+  };
+  showResults(results, e);
+  return;
+
   fetch(url)
     .then((response) => response.text())
     .then((body) => {

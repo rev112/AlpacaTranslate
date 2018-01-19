@@ -1,13 +1,46 @@
 .transbox {
   position: fixed !important;
   border: solid 1px #ccc !important;
+  border-radius: 8px !important;
   width: 400px !important;
   height: 300px !important;
-  box-shadow: 8px 16px 30px rgba(0, 0, 0, 0.16) !important;
+  padding: 10px !important;
+  box-shadow: 0 0 30px 2px rgba(0, 0, 0, 0.16) !important;
   display: block !important;
   background-color: white !important;
   opacity: 1 !important;
   z-index: 2147483647 !important;
   color: black !important;
   font-family: "Times New Roman", Times, serif !important;
+}
+
+.trans-normalized {
+  font-size: 1.8em;
+}
+
+.trans-single-group {
+  font-size: 1.5em;
+  margin-left: 20px;
+  margin-top: 10px;
+}
+
+.trans-desc {
+  margin-left: 0.2em;
+  font-style: italic;
+  display: inline-block;
+  width: 1.4em;
+  text-align: center;
+}
+
+.trans-link-original {
+  width: 0.8em;
+  margin-left: 0.6em;
+  border: 0;
+  /*background-image: url("../icons/external_512.png");*/
+  /*display: block;*/
+}
+
+.trans-link-original a:active, a:focus {
+  outline: 0;
+  border: none;
 }
