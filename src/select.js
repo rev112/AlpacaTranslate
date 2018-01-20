@@ -1,10 +1,16 @@
 /* globals fetch, browser, Handlebars */
 'use strict';
 
-const isDebug = true;
+const enableDebugOutput = true;
+const enableTestData = false;
 const dialogClass = 'transbox';
+let externalImgUrl = 'src/icons/external_link.png';
 let isShown = false;
-const externalImgUrl = browser.extension.getURL('src/icons/external_512.png');
+
+// Allow the code to work both in the context of a webextension and a normal web-page
+if (typeof browser !== 'undefined') {
+  externalImgUrl = browser.extension.getURL(externalImgUrl);
+}
 
 const tooltipTemplate = `
 <div class="trans-normalized">
@@ -25,7 +31,7 @@ const tooltipTemplate = `
 
 
 function log_debug(...args) {
-  if (isDebug) {
+  if (enableDebugOutput) {
     console.log(...args);
   }
 }
@@ -43,8 +49,8 @@ function hideTooltip() {
 
 function showResults(results, e) {
   log_debug('Showing result tooltip...');
-  const x = e.clientX;
-  const y = e.clientY;
+  const x = e.pageX;
+  const y = e.pageY;
   results.externalImg = externalImgUrl;
   const elem = document.createElement('div');
   const template = Handlebars.compile(tooltipTemplate);
@@ -52,13 +58,12 @@ function showResults(results, e) {
   elem.classList.add(dialogClass);
   elem.style.left = x + 10 + 'px';
   elem.style.top = y + 10 + 'px';
-
   document.body.appendChild(elem);
   isShown = true;
 }
 
 
-function getExampleResults() {
+function getTestData() {
   const results = {
     'original':'characters',
     'normalized':'characters',
@@ -77,6 +82,12 @@ function getExampleResults() {
 
 
 function showTooltip(text, e) {
+  if (enableTestData) {
+    let results = getTestData();
+    showResults(results, e);
+    return;
+  }
+
   const url = 'https://www.linguee.com/english-russian/search?query=' + text;
   fetch(url)
     .then((response) => response.text())
@@ -116,13 +127,30 @@ function showTooltip(text, e) {
 }
 
 
-document.addEventListener('click', () => {
-  if (isShown) {
+function isClickOnTooltip(e) {
+  let node = e.originalTarget;
+  while (node) {
+    if (node.classList.contains(dialogClass)) {
+      return true;
+    }
+    node = node.parentElement;
+  }
+  return false;
+}
+
+
+document.addEventListener('click', (e) => {
+  if (isShown && !isClickOnTooltip(e)) {
     hideTooltip();
   }
 });
 
+
 document.addEventListener('dblclick', (e) => {
+  if (isClickOnTooltip(e)) {
+    return;
+  }
+
   const selObj = window.getSelection().toString();
   const withShift = e.shiftKey;
   log_debug('Double click, with SHIFT: ', withShift);
