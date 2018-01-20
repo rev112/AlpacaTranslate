@@ -1,9 +1,27 @@
-/* globals fetch */
+/* globals fetch, browser, Handlebars */
 'use strict';
 
 const isDebug = true;
 const dialogClass = 'transbox';
 let isShown = false;
+const externalImgUrl = browser.extension.getURL('src/icons/external_512.png');
+
+const tooltipTemplate = `
+<div class="trans-normalized">
+  <span>{{normalized}}</span>
+  <a target="_blank" href="{{url}}" title="Linguee">
+    <img class="trans-link-original" src="{{externalImg}}" alt="external source"/>
+  </a>
+</div>
+<div class="trans-list">
+  {{#each translations}}
+  <div class="trans-single-group">
+    <span class="trans-single-term">{{transString}}</span>
+    <span class="trans-desc" title="{{transDesc.title}}">{{transDesc.short}}</span>
+  </div>
+  {{/each}}
+</div>
+`;
 
 
 function log_debug(...args) {
@@ -14,7 +32,7 @@ function log_debug(...args) {
 
 
 function hideTooltip() {
-  log_debug('Showing result tooltip...');
+  log_debug('Hiding result tooltip...');
   const elems = document.getElementsByClassName(dialogClass);
   for (let i = 0; i < elems.length; i++) {
     elems[i].remove();
@@ -27,8 +45,10 @@ function showResults(results, e) {
   log_debug('Showing result tooltip...');
   const x = e.clientX;
   const y = e.clientY;
+  results.externalImg = externalImgUrl;
   const elem = document.createElement('div');
-  elem.innerHTML = JSON.stringify(results);
+  const template = Handlebars.compile(tooltipTemplate);
+  elem.innerHTML = template(results);
   elem.classList.add(dialogClass);
   elem.style.left = x + 10 + 'px';
   elem.style.top = y + 10 + 'px';
@@ -38,23 +58,26 @@ function showResults(results, e) {
 }
 
 
+function getExampleResults() {
+  const results = {
+    'original':'characters',
+    'normalized':'characters',
+    'translations': [
+      {'transString':'символы','transDesc':{'short':'pl','title':'noun, plural'}},
+      {'transString':'персонажи','transDesc':{'short':'pl','title':'noun, plural'}},
+      {'transString':'герои','transDesc':{'short':'pl','title':'noun, plural'}},
+      {'transString':'знаки','transDesc':{'short':'pl','title':'noun, plural'}},
+      {'transString':'героини','transDesc':{'short':'pl','title':'noun, plural'}},
+      {'transString':'личности','transDesc':{'short':'pl','title':'noun, plural'}}
+    ],
+    'url':'https://www.linguee.com/english-russian/search?query=characters'
+  };
+  return results;
+}
+
+
 function showTooltip(text, e) {
   const url = 'https://www.linguee.com/english-russian/search?query=' + text;
-
-  const results = {
-    'original':'capability',
-    'normalized':'capability',
-    'translations':[
-      ['возможность',['f','noun, feminine']],
-      ['потенциал',['m','noun, masculine']],
-      ['способность',['f','noun, feminine']],
-      ['умение',['nt','noun, neuter']]
-    ],
-    'url':'https://www.linguee.com/english-russian/search?query=capability'
-  };
-  showResults(results, e);
-  return;
-
   fetch(url)
     .then((response) => response.text())
     .then((body) => {
@@ -70,7 +93,13 @@ function showTooltip(text, e) {
         let text = tr.getElementsByClassName('dictLink')[0].text;
         let type = tr.getElementsByClassName('tag_type')[0].textContent;
         let type_desc = tr.getElementsByClassName('tag_type')[0].title;
-        return [text, [type, type_desc]];
+        return {
+          transString: text,
+          transDesc: {
+            short: type,
+            title: type_desc
+          }
+        };
       });
 
       let normalized_block = exact_match_block.getElementsByClassName('line lemma_desc')[0];
@@ -81,7 +110,7 @@ function showTooltip(text, e) {
         'translations': translations,
         'url': url
       };
-      log_debug('Results:', results);
+      log_debug('Results:', JSON.stringify(results));
       showResults(results, e);
     });
 }

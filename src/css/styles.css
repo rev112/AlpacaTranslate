@@ -15,11 +15,11 @@
 }
 
 .trans-normalized {
-  font-size: 1.8em;
+  font-size: 1.4em;
 }
 
 .trans-single-group {
-  font-size: 1.5em;
+  font-size: 1.2em;
   margin-left: 20px;
   margin-top: 10px;
 }
@@ -36,11 +36,10 @@
   width: 0.8em;
   margin-left: 0.6em;
   border: 0;
-  /*background-image: url("../icons/external_512.png");*/
-  /*display: block;*/
 }
 
-.trans-link-original a:active, a:focus {
+.trans-link-original a:active,
+.trans-link-original a:focus {
   outline: 0;
   border: none;
 }
