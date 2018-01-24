@@ -3,7 +3,8 @@
   "private": true,
   "contributors": [],
   "devDependencies": {
-    "eslint": "*"
+    "eslint": "^4.16.0",
+    "web-ext": "^2.3.2"
   },
   "dependencies": {}
 }
