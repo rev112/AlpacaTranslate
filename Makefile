@@ -1,3 +1,6 @@
+none:
+	@echo 'Nothing to do' && exit 1
+
 install:
 	yarn install
 
