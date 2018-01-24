@@ -19,6 +19,16 @@ In short:
 
 "Open about:debugging in Firefox, click "Load Temporary Add-on" and select any file in your extension's directory:"
 
+#### Cool way
+
+Check `web-ext` tutorial: https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Getting_started_with_web-ext
+
+So basically just run 
+
+    make webext-run
+    
+...and it will open a new Firefox window with a plugin loaded, and will reload the extension automatically upon code changes.
+
 ## How to use
 
 Hold "Shift" and double click on a word you want to translate. A popup with translations will appear in a second or two.
