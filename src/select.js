@@ -4,6 +4,8 @@
 const enableDebugOutput = true;
 const enableTestData = false;
 const dialogClass = 'transbox';
+const transClass = 'trans-size';
+const errorClass = 'err-size';
 let externalImgUrl = 'src/icons/external_link.png';
 let isShown = false;
 
@@ -26,6 +28,12 @@ const tooltipTemplate = `
     <span class="trans-desc" title="{{transDesc.title}}">{{transDesc.short}}</span>
   </div>
   {{/each}}
+</div>
+`;
+
+const tooltipErrorTemplate = `
+<div class="error-tooltip">
+  <span>No translation block found</span>
 </div>
 `;
 
@@ -56,10 +64,26 @@ function showResults(results, e) {
   const template = Handlebars.compile(tooltipTemplate);
   elem.innerHTML = template(results);
   elem.classList.add(dialogClass);
+  elem.classList.add(transClass);
   elem.style.left = x + 10 + 'px';
   elem.style.top = y + 10 + 'px';
   document.body.appendChild(elem);
   isShown = true;
+}
+
+function showTranslationError(e){
+  log_debug('Showing error tooltip...');  
+  const x = e.pageX;
+  const y = e.pageY;
+  const elem = document.createElement('div');
+  const template = Handlebars.compile(tooltipErrorTemplate);
+  elem.innerHTML = template();
+  elem.classList.add(dialogClass);
+  elem.classList.add(errorClass);
+  elem.style.left = x + 10 + 'px';
+  elem.style.top = y + 10 + 'px';
+  document.body.appendChild(elem);
+  isShown = true; 
 }
 
 
@@ -97,6 +121,7 @@ function showTooltip(text, e) {
       let exact_match_block = el.getElementsByClassName('lemma featured')[0];
       if (!exact_match_block) {
         log_debug('No translation block found');
+        showTranslationError(e);
         return;
       }
       let translation_blocks = Array.from(exact_match_block.getElementsByClassName('tag_trans'));
