@@ -4,6 +4,8 @@
 const enableDebugOutput = true;
 const enableTestData = false;
 const dialogClass = 'transbox';
+const transClass = 'trans-size';
+const errorClass = 'err-size';
 let externalImgUrl = 'src/icons/external_link.png';
 let isShown = false;
 
@@ -29,6 +31,12 @@ const tooltipTemplate = `
 </div>
 `;
 
+const tooltipErrorTemplate = `
+<div class="error-tooltip">
+  <span>No translation block found</span>
+</div>
+`;
+
 
 function log_debug(...args) {
   if (enableDebugOutput) {
@@ -46,20 +54,34 @@ function hideTooltip() {
   isShown = false;
 }
 
+function prepareElem(e, additionalClass){
+  const x = e.pageX;
+  const y = e.pageY;
+  const preparingElem = document.createElement('div');
+  preparingElem.classList.add(dialogClass);
+  preparingElem.classList.add(additionalClass);
+  preparingElem.style.left = x + 10 + 'px';
+  preparingElem.style.top = y + 10 + 'px';  
+  return preparingElem;
+}
 
 function showResults(results, e) {
   log_debug('Showing result tooltip...');
-  const x = e.pageX;
-  const y = e.pageY;
+  const elem = prepareElem(e, transClass);
+  const template = Handlebars.compile(usedTemplate);
   results.externalImg = externalImgUrl;
-  const elem = document.createElement('div');
-  const template = Handlebars.compile(tooltipTemplate);
   elem.innerHTML = template(results);
-  elem.classList.add(dialogClass);
-  elem.style.left = x + 10 + 'px';
-  elem.style.top = y + 10 + 'px';
   document.body.appendChild(elem);
   isShown = true;
+}
+
+function showTranslationError(e){
+  log_debug('Showing error tooltip...');  
+  const elem = prepareElem(e, transClass);
+  const template = Handlebars.compile(tooltipErrorTemplate);
+  elem.innerHTML = template();
+  document.body.appendChild(elem);
+  isShown = true; 
 }
 
 
@@ -97,6 +119,7 @@ function showTooltip(text, e) {
       let exact_match_block = el.getElementsByClassName('lemma featured')[0];
       if (!exact_match_block) {
         log_debug('No translation block found');
+        showTranslationError(e);
         return;
       }
       let translation_blocks = Array.from(exact_match_block.getElementsByClassName('tag_trans'));
