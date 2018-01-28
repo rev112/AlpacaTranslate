@@ -54,7 +54,7 @@ function hideTooltip() {
   isShown = false;
 }
 
-function prepareElem(e, usedTemplate, additionalClass){
+function prepareElem(e, additionalClass){
   const x = e.pageX;
   const y = e.pageY;
   const preparingElem = document.createElement('div');
