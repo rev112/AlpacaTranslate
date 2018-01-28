@@ -54,34 +54,32 @@ function hideTooltip() {
   isShown = false;
 }
 
+function prepareElem(e, usedTemplate, additionalClass){
+  const x = e.pageX;
+  const y = e.pageY;
+  const preparingElem = document.createElement('div');
+  preparingElem.classList.add(dialogClass);
+  preparingElem.classList.add(additionalClass);
+  preparingElem.style.left = x + 10 + 'px';
+  preparingElem.style.top = y + 10 + 'px';  
+  return preparingElem;
+}
 
 function showResults(results, e) {
   log_debug('Showing result tooltip...');
-  const x = e.pageX;
-  const y = e.pageY;
+  const elem = prepareElem(e, transClass);
+  const template = Handlebars.compile(usedTemplate);
   results.externalImg = externalImgUrl;
-  const elem = document.createElement('div');
-  const template = Handlebars.compile(tooltipTemplate);
   elem.innerHTML = template(results);
-  elem.classList.add(dialogClass);
-  elem.classList.add(transClass);
-  elem.style.left = x + 10 + 'px';
-  elem.style.top = y + 10 + 'px';
   document.body.appendChild(elem);
   isShown = true;
 }
 
 function showTranslationError(e){
   log_debug('Showing error tooltip...');  
-  const x = e.pageX;
-  const y = e.pageY;
-  const elem = document.createElement('div');
+  const elem = prepareElem(e, transClass);
   const template = Handlebars.compile(tooltipErrorTemplate);
   elem.innerHTML = template();
-  elem.classList.add(dialogClass);
-  elem.classList.add(errorClass);
-  elem.style.left = x + 10 + 'px';
-  elem.style.top = y + 10 + 'px';
   document.body.appendChild(elem);
   isShown = true; 
 }
