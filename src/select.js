@@ -28,7 +28,7 @@ const tooltipTemplate = `
   <a target="_blank" href="{{url}}" title="Linguee">
     <img class="trans-link-original" src="{{externalImg}}" alt="external source"/>
   </a>
-  <audio id="trans-audio" src="{{audio_url}}">
+  <audio id="trans-audio" src="">
     No audio support
   </audio>
 </div>
@@ -82,6 +82,18 @@ function showResults(results, e) {
   const template = Handlebars.compile(tooltipTemplate);
   results.externalImg = externalImgUrl;
   results.soundImg = soundImgUrl;
+  // FIXME ugly, move to a function?
+  fetch(results.audio_url)
+    .then((resp) => resp.blob())
+    .then((blob)=>{
+      let reader = new FileReader();
+      reader.readAsDataURL(blob);
+      reader.onloadend = () => {
+        const base64_audio = reader.result;
+        const el = elem.getElementsByClassName('audio')[0];
+        el.src = base64_audio;
+      };
+    });
   elem.innerHTML = template(results);
   document.body.appendChild(elem);
   isShown = true;
