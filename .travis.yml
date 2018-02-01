@@ -2,4 +2,6 @@ language: node_js
 cache: 
   yarn: true
 script:
+  - git status
   - make eslint
+  - make webext-lint

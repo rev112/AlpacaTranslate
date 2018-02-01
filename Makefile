@@ -1,3 +1,6 @@
+SHELL=/bin/bash
+NODE_BIN=./node_modules/.bin
+
 none:
 	@echo 'Nothing to do' && exit 1
 
@@ -5,7 +8,10 @@ install:
 	yarn install
 
 eslint:
-	./node_modules/.bin/eslint src/
+	$(NODE_BIN)/eslint src/
 
 webext-run:
-	./node_modules/.bin/web-ext run
+	$(NODE_BIN)/web-ext run
+
+webext-lint:
+	$(NODE_BIN)/web-ext lint
